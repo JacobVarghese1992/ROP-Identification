@@ -44,6 +44,7 @@ Instructions: https://www.tensorflow.org/tutorials/image_retraining
 
 Commands: 
 Training and testing:
+Replace "output_cats" with the corresponding categories folder placed in tf_files/
 ```{r, engine='bash', count_lines}
 python -m scripts.retrain \
     --bottleneck_dir=tf_files/bottlenecks \
@@ -52,7 +53,7 @@ python -m scripts.retrain \
     --output_graph=tf_files/retrained_graph.pb \
     --output_labels=tf_files/retrained_labels.txt \
     --architecture="inception_v3" \
-    --image_dir=tf_files/flower_photos 
+    --image_dir=tf_files/output_cats 
 ```
 
 Only Training so you can run a custom test script:
@@ -64,14 +65,15 @@ python -m scripts.retrain \
     --output_graph=tf_files/retrained_graph.pb \
     --output_labels=tf_files/retrained_labels.txt \
     --architecture="inception_v3" \
-    --image_dir=tf_files/flower_photos  \
+    --image_dir=tf_files/output_cats  \
     --testing_percentage = 0
 ```
 
-| Experiment        | Description               | Accuracy  |
+| Experiment        | Description               | Max Accuracy  |
 | ----------------- |:-------------------------:| -----:|
 | Horizontal Concatenation      | We wanted to make use of as much information available as possible. Inception v3 uses a 299 x 299 image as the input vector. Since our input is an image of size 3200px x 480px , padding and reducing the size causes the image to get blurry | 67.05 % |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
+| 4Square Concatenation     | To reduce the effects of blurring, the 'DiscUp.png', 'DiscLeft.png', 'DiscRight.png', 'DiscDown.png' images were concatenated to a square of size 1280px x 960px reducing the effects of blurring |   68.4% |
+| Center Image only | One of the indicators of ROP is plus disease prominent in near the pole. |    64.2% |
+| All images considered independently | All views and images were considered independently multiplying the input set by a factor of 5. The testing was custom where for an examination the max of image output was considered as final result, ie even if one view showed ROP the set has ROP |    69.5% |
 
 
